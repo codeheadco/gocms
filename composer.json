@@ -11,7 +11,8 @@
 	"minimum-stability": "dev",
 	"prefer-stable": true,
     "require": {
-		"yiisoft/yii2": "^2.0.13"
+		"yiisoft/yii2": "^2.0.13",
+		"codeheadco/tools": "dev-master"
 	},
 	"autoload": {
         "psr-4": {
