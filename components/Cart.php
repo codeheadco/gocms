@@ -2,7 +2,10 @@
 
 namespace codeheadco\gocms\components;
 
-use \Yii;
+use Yii;
+use codeheadco\tools\Utils;
+use yii\base\InvalidArgumentException;
+use yii\bootstrap\Html;
 
 /**
  * Description of Cart
@@ -103,7 +106,7 @@ class Cart
     public function getItems($itemClass)
     {
         if (!Utils::implementsInterface($itemClass, CartItemInterface::class)) {
-            throw new \yii\base\InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
         
         $cartData = $this->get();
@@ -119,7 +122,7 @@ class Cart
     
     public function getAmountInput($itemId, $amount)
     {
-        return \yii\bootstrap\Html::input('number', "amounts[{$itemId}]", $amount);
+        return Html::input('number', "amounts[{$itemId}]", $amount);
     }
     
 }

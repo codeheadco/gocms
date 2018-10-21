@@ -3,13 +3,18 @@
 namespace codeheadco\gocms\components;
 
 use Yii;
+use yii\base\BaseObject;
+use yii\web\UrlRuleInterface;
+use yii\helpers\ArrayHelper;
+use app\models\MenuItemI18;
+use app\models\MenuItem;
 
 /**
  * Description of UrlRule
  *
  * @author Varga Gábor <gabor87@outlook.com>
  */
-class UrlRule extends \yii\base\BaseObject implements \yii\web\UrlRuleInterface
+class UrlRule extends BaseObject implements UrlRuleInterface
 {
     
     public static $params = [];
@@ -18,9 +23,9 @@ class UrlRule extends \yii\base\BaseObject implements \yii\web\UrlRuleInterface
     {
         /* @var $manager UrlManager */
         
-        $language = \yii\helpers\ArrayHelper::remove($params, 'language');
+        $language = ArrayHelper::remove($params, 'language');
         
-        $menuItemI18 = \app\models\MenuItemI18::findOne([
+        $menuItemI18 = MenuItemI18::findOne([
             'url' => $route,
         ]);
 
@@ -34,7 +39,7 @@ class UrlRule extends \yii\base\BaseObject implements \yii\web\UrlRuleInterface
             $queryString = http_build_query($params);
             $queryString = $queryString ? "?{$queryString}" : '';
 
-            return \app\models\MenuItemI18::findOne([
+            return MenuItemI18::findOne([
                 'menu_item_id' => $menuItemI18->menu_item_id,
                 'language' => $language ? $language : Yii::$app->language,
             ])->url
@@ -71,7 +76,7 @@ class UrlRule extends \yii\base\BaseObject implements \yii\web\UrlRuleInterface
         
         static::$params['pathInfo'] = $pathInfo;
         
-        $menuItemI18s = \app\models\MenuItemI18::findAll([
+        $menuItemI18s = MenuItemI18::findAll([
             'url' => $pathInfo,
         ]);
         
@@ -89,7 +94,7 @@ class UrlRule extends \yii\base\BaseObject implements \yii\web\UrlRuleInterface
             
             Yii::$app->language = $menuItemI18->language;
         
-            $menuItem = \app\models\MenuItem::findOne($menuItemI18->menu_item_id);
+            $menuItem = MenuItem::findOne($menuItemI18->menu_item_id);
             static::$params['menuItem'] = $menuItem;
             static::$params['menuItemI18'] = $menuItemI18;
             static::$params['query'] = $menuItemI18->query;

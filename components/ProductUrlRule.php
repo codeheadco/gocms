@@ -3,21 +3,24 @@
 namespace codeheadco\gocms\components;
 
 use Yii;
+use yii\web\UrlRuleInterface;
+use yii\helpers\ArrayHelper;
+use app\models\ProductI18;
 
 /**
  * Description of ProductUrlRule
  *
  * @author Varga Gábor <gabor87@outlook.com>
  */
-class ProductUrlRule implements \yii\web\UrlRuleInterface
+class ProductUrlRule implements UrlRuleInterface
 {
 
     public function createUrl($manager, $route, $params)
     {
-        $language = \yii\helpers\ArrayHelper::remove($params, 'language');
+        $language = ArrayHelper::remove($params, 'language');
         
         if ($language) {
-            $productI18 = \app\models\ProductI18::findOne([
+            $productI18 = ProductI18::findOne([
                 'url' => $route,
             ]);
             
@@ -27,14 +30,14 @@ class ProductUrlRule implements \yii\web\UrlRuleInterface
                 $queryString = http_build_query($params);
                 $queryString = $queryString ? "?{$queryString}" : '';
                 
-                return \app\models\ProductI18::findOne([
+                return ProductI18::findOne([
                     'product_id' => $productI18->product_id,
                     'language' => $language,
                 ])->url;
             }
         }
         
-        if ($productI18 = \yii\helpers\ArrayHelper::getValue($params, 'productI18')) {
+        if ($productI18 = ArrayHelper::getValue($params, 'productI18')) {
             /* @var $productI18 \app\models\ProductI18 */
             return $productI18->url;
         }
@@ -46,10 +49,10 @@ class ProductUrlRule implements \yii\web\UrlRuleInterface
     {
         /* @var $manager \yii\web\UrlManager */
         /* @var $request \yii\web\Request */
-        $productI18 = \app\models\ProductI18::find()
-                                ->joinWith('product', true, 'INNER JOIN')
-                                ->andWhere(['url' => $request->pathInfo])
-                                ->one();
+        $productI18 = ProductI18::find()
+                        ->joinWith('product', true, 'INNER JOIN')
+                        ->andWhere(['url' => $request->pathInfo])
+                        ->one();
         /* @var $productI18 \app\models\ProductI18 */
         
         if ($productI18) {

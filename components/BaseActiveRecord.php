@@ -4,6 +4,9 @@ namespace codeheadco\gocms\components;
 
 use Yii;
 use yii\db\ActiveRecord;
+use codeheadco\tools\ReflectionTrait;
+use codeheadco\tools\DirectoryInterface;
+use yii\helpers\ArrayHelper;
 
 /**
  * Description of BaseActiveRecord
@@ -32,33 +35,12 @@ class BaseActiveRecord extends ActiveRecord
         
         return null;
     }
-//    
-//    public function getImagePath($attribute)
-//    {
-//        $imageName = $this->getAttribute($attribute);
-//        return \Yii::getAlias('@webroot') . "/uploads" . $this->getUploadDirName() . "/{$imageName}";
-//    }
     
     public function getAttributeLabels($attribute)
     {
         $labels = $this->attributeLabels();
         
-        return \yii\helpers\ArrayHelper::getValue($labels, "{$attribute}_labels", []);
-    }
-    
-    public static function processTemplateWith($model, $template)
-    {
-        $data = $template;
-        
-        if ($model) {
-            if (preg_match_all('#{(.+?)}#', $template, $matches)) {
-                foreach ($matches[1] as $toReplace) {
-                    $data = trim(str_replace("{{$toReplace}}", \yii\helpers\ArrayHelper::getValue($model, $toReplace, ''), $data));
-                }
-            }
-        }
-        
-        return $data;
+        return ArrayHelper::getValue($labels, "{$attribute}_labels", []);
     }
     
 }
