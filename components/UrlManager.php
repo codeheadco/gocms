@@ -1,15 +1,13 @@
 <?php
 
-namespace codeheadco\gocms\components;
-
-use yii\web\UrlManager as BaseUrlManager;
+namespace app\components;
 
 /**
  * Description of UrlManager
  *
  * @author Varga Gábor <gabor87@outlook.com>
  */
-class UrlManager extends BaseUrlManager
+class UrlManager extends \yii\web\UrlManager
 {
     
     public $urls = [];

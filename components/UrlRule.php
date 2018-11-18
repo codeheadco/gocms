@@ -1,62 +1,87 @@
 <?php
 
-namespace codeheadco\gocms\components;
+namespace app\components;
 
 use Yii;
-use yii\base\BaseObject;
-use yii\web\UrlRuleInterface;
-use yii\helpers\ArrayHelper;
-use app\models\MenuItemI18;
-use app\models\MenuItem;
 
 /**
  * Description of UrlRule
  *
  * @author Varga Gábor <gabor87@outlook.com>
  */
-class UrlRule extends BaseObject implements UrlRuleInterface
+class UrlRule extends \yii\base\BaseObject implements \yii\web\UrlRuleInterface
 {
     
     public static $params = [];
 
-    public function createUrl($manager, $route, $params)
+    public function createLanguageUrl($language, $manager, $route, $params)
     {
         /* @var $manager UrlManager */
         
-        $language = ArrayHelper::remove($params, 'language');
+        $menuItemI18 = \app\models\MenuItemI18::findOne(['url' => $route]);
         
-        $menuItemI18 = MenuItemI18::findOne([
-            'url' => $route,
-        ]);
-
         if ($menuItemI18) {
+            return \app\models\MenuItemI18::findOne([
+                'menu_item_id' => $menuItemI18->menu_item_id,
+                'language' => $language,
+            ])->url;
+        }
+        
+        if (isset($manager->urls[$route])) {
+            if (static::parseRouteLanguage($manager->urls[$route], $routeRoute, $routeLanguage)) {
+                if (isset($manager->routes["{$routeRoute} {$language}"])) {
+                    return $manager->routes["{$routeRoute} {$language}"];
+                }
+            }
+        }
+        
+        return false;
+    }
+
+    public function createUrl($manager, $route, $params)
+    {        
+        /* @var $manager UrlManager */
+        
+        $language = \yii\helpers\ArrayHelper::remove($params, 'language');
+        
+        if ($language) {
+            return $this->createLanguageUrl($language, $manager, $route, $params);
+        }
+        
+        $url = \yii\helpers\ArrayHelper::remove($params, 'url');
+        
+        $menuItemQuery = \app\models\MenuItem::find();
+        $menuItemQuery->andWhere(['route' => $route]);
+        $menuItemQuery->joinWith('menuItemI18', true, 'INNER JOIN');
+        if ($language) {
+            $menuItemQuery->andWhere(['menu_item_i18.language' => $language]);
+        }
+        if ($url) {
+            $menuItemQuery->andWhere(['menu_item_i18.url' => $url]);
+        }
+        $menuItem = $menuItemQuery->one();
+        
+        if ($menuItem) {
+            $menuItemI18 = $menuItem->menuItemI18;
+            
             parse_str($menuItemI18->query, $aaa);
 
             foreach (array_keys($aaa) as $key) {
                 unset($params[$key]);
             }
-
             $queryString = http_build_query($params);
-            $queryString = $queryString ? "?{$queryString}" : '';
 
-            return MenuItemI18::findOne([
-                'menu_item_id' => $menuItemI18->menu_item_id,
-                'language' => $language ? $language : Yii::$app->language,
-            ])->url
-            . $queryString;
+            return $menuItemI18->url . ($queryString ? "?{$queryString}" : '');
         } else {
-            if (isset($manager->urls[$route])) {
-                $routeLanguage = $manager->urls[$route];
+            $currentLanguage = Yii::$app->language;
+            $routeLanguage = "{$route} {$currentLanguage}";
+            
+            if (isset($manager->routes[$routeLanguage])) {
+                $url = $manager->routes[$routeLanguage];
+                
+                $queryString = http_build_query($params);
 
-                if (static::parseRouteLanguage($routeLanguage, $routeByUrl, $languageByUrl)) {
-                    $queryString = http_build_query($params);
-                    $queryString = $queryString ? "?{$queryString}" : '';
-
-                    if (isset($manager->routes["{$routeByUrl} {$language}"])) {
-                        return $manager->routes["{$routeByUrl} {$language}"]
-                        . $queryString;
-                    }
-                }
+                return $url . ($queryString ? "?{$queryString}" : '');
             }
         }
         
@@ -76,7 +101,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
         
         static::$params['pathInfo'] = $pathInfo;
         
-        $menuItemI18s = MenuItemI18::findAll([
+        $menuItemI18s = \app\models\MenuItemI18::findAll([
             'url' => $pathInfo,
         ]);
         
@@ -94,7 +119,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             
             Yii::$app->language = $menuItemI18->language;
         
-            $menuItem = MenuItem::findOne($menuItemI18->menu_item_id);
+            $menuItem = \app\models\MenuItem::findOne($menuItemI18->menu_item_id);
             static::$params['menuItem'] = $menuItem;
             static::$params['menuItemI18'] = $menuItemI18;
             static::$params['query'] = $menuItemI18->query;
