@@ -1,6 +1,6 @@
 {
     "name": "codeheadco/gocms",
-    "type": "library",
+    "type": "yii2-extension",
     "license": "MIT",
     "authors": [
         {
