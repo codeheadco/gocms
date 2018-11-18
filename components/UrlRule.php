@@ -1,15 +1,17 @@
 <?php
 
-namespace app\components;
+namespace codeheadco\gocms\components;
 
 use Yii;
+use yii\base\BaseObject;
+use yii\web\UrlRuleInterface;
 
 /**
  * Description of UrlRule
  *
  * @author Varga Gábor <gabor87@outlook.com>
  */
-class UrlRule extends \yii\base\BaseObject implements \yii\web\UrlRuleInterface
+class UrlRule extends BaseObject implements UrlRuleInterface
 {
     
     public static $params = [];
