@@ -1,0 +1,7 @@
+.content-wrapper{
+    padding: 20px;
+}
+#login-form .form-group{
+    margin-right: 0;
+    margin-left: 0;
+}
