@@ -169,7 +169,7 @@ class Manager extends \yii\base\Behavior implements ContainerInterface
     
     public function update()
     {
-        $managedViewFiles = \yii\helpers\FileHelper::findFiles(Yii::getAlias(Yii::$app->pagesManager->viewsPath));
+        $managedViewFiles = \yii\helpers\FileHelper::findFiles(Yii::getAlias($this->viewsPath));
         
         $view = Yii::$app->view;
         /* @var $view \app\components\BaseView */
