@@ -55,26 +55,63 @@ class AdminBaseController extends Controller
         return $result;
     }
     
+    protected function save($model, $view, $fileFields = [])
+    {
+        $modelShortClass = \codeheadco\tools\Utils::classShortName($model);
+        $modelI18ShortClass = "{$modelShortClass}I18";
+        
+        $postData = Yii::$app->request->post();
+
+        if ($postData) {
+            $modelData = ArrayHelper::getValue($postData, $modelShortClass);
+            
+            if ($modelData) {
+                $model->setAttributes($modelData);
+            }
+            
+            if ($model->save()) {
+                foreach ($fileFields as $fieldName) {
+                    $this->handleFileUpload($model, $fieldName);
+                }
+                
+                $modelI18sData = ArrayHelper::getValue($postData, $modelI18ShortClass);
+
+                if ($modelI18sData) {
+                    foreach ($modelI18sData as $language => $modelI18Data) {
+                        $categoryI18 = $model->getI18Model($language);
+                        /* @var $categoryI18 \app\models\CategoryI18 */
+                        $categoryI18->category_id = $model->id;
+
+                        $categoryI18->name = $modelI18Data['name'];
+                        $categoryI18->save(false);
+                    }
+                }
+                
+                return $this->redirect(['update', 'id' => $model->id]);
+            }
+        }
+
+        return $this->render($view, [
+            'model' => $model,
+        ]);
+    }
+    
     public function handleFileUpload(\yii\db\BaseActiveRecord $model, $attribute, $save = true)
     {
-        if (! ($model instanceof \app\components\FileUploadInterface)) {
+        if (! ($model instanceof \codeheadco\tools\DirectoryInterface)) {
             throw new \InvalidArgumentException();
         }
 
-        $image = UploadedFile::getInstance($model, $attribute);
+        $file = UploadedFile::getInstance($model, $attribute);
         
-        if ($image) {
-            $fileName = $attribute . '_' . $model->id . '.' . strtolower($image->extension);
-
-            $dirPath = \Yii::getAlias('@webroot') . '/uploads' . $model->getUploadDirName();
-            $filePath = $dirPath . '/' . $fileName;
+        if ($file) {
+            $directoryPath = $model->getDirectoryPath();
+            $directoryPath->ensure();
             
-            if (!is_dir($dirPath)) {
-                \yii\helpers\FileHelper::createDirectory($dirPath);
-            }
+            $newFileName = strtolower(time() . '_' . $file->basename . '.' . $file->extension);
             
-            if ($image->saveAs($filePath)) {
-                $model->setAttribute($attribute, $fileName);
+            if ($file->saveAs($directoryPath->getPath() . "/{$newFileName}")) {
+                $model->setAttribute($attribute, $newFileName);
                 
                 if ($save) {
                     return $model->save(false, [$attribute]);

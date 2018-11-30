@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use app\components\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Page */
@@ -12,23 +12,17 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'status')->textInput(['maxlength' => true]) ?>
-    
-    <?php foreach ($model->getWidgets() as $one): 
-        $widgetInstance = $one[0]::begin($one[1]);
-        $one[0]::end(); ?>
-    
-        <div class="panel">
-            
-            <?= $widgetInstance->admin($model) ?>
-            
-        </div>
-    
-    <?php endforeach; ?>
+        <?= $form->field($model, 'status')->textInput(['maxlength' => true]) ?>
 
-    <div class="form-group">
-        <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
-    </div>
+        <?= $this->render('/_form_tabs_i18', [
+            'view' => '/pages/_form_i18',
+            'model' => $model,
+            'form' => $form,
+        ]); ?>
+
+        <div class="form-group">
+            <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
+        </div>
 
     <?php ActiveForm::end(); ?>
 

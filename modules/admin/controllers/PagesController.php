@@ -14,6 +14,21 @@ use yii\filters\VerbFilter;
  */
 class PagesController extends \codeheadco\gocms\modules\admin\components\AdminBaseController
 {
+    
+    /** 
+     * {@inheritdoc} 
+     */ 
+    public function behaviors() 
+    { 
+        return [ 
+            'verbs' => [ 
+                'class' => VerbFilter::className(), 
+                'actions' => [ 
+                    'delete' => ['POST'], 
+                ], 
+            ], 
+        ]; 
+    } 
 
     /**
      * Lists all Page models.
