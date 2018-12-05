@@ -36,7 +36,7 @@ class PagesController extends \codeheadco\gocms\modules\admin\components\AdminBa
      */
     public function actionIndex()
     {
-        Yii::$app->pagesHandler->update();
+        Yii::$app->pagesManager->update();
         
         $searchModel = new PageSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);

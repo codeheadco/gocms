@@ -108,6 +108,10 @@ use yii\helpers\Url;
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         
+        <?= yii\widgets\Breadcrumbs::widget([
+            'links' => yii\helpers\ArrayHelper::getValue($this->params, 'breadcrumbs'),
+        ]) ?>
+        
         <?= $content ?>
         
     </div>

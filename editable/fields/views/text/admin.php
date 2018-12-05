@@ -1,6 +1,7 @@
 <?php
 /* @var $this \app\components\BaseView */
 ?>
+
 <div class="panel panel-default">
     
     <div class="panel-body">

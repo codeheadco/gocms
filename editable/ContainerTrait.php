@@ -25,6 +25,29 @@ trait ContainerTrait
      * @param type $fieldClass
      * @param type $id
      * @param type $config
+     */
+    public function field($fieldClass, $id, $config = [])
+    {
+        $manager = $this->getManager();
+        /* @var $manager Manager */
+        
+        $config['id'] = $id;
+        $config['manager'] = $this->getManager();
+        $config['parent'] = $this;
+        
+        $field = new $fieldClass($config);
+        $manager->getActiveContainer()->components[] = $field;
+        
+        \yii\di\Instance::ensure($field, Field::class);
+        
+        return $field;
+    }
+    
+    /**
+     * 
+     * @param type $fieldClass
+     * @param type $id
+     * @param type $config
      * @return Field|ContainerInterface
      */
     public function beginField($fieldClass, $id, $config = [])
@@ -82,17 +105,7 @@ trait ContainerTrait
      */
     public function text($id, $config = [])
     {
-        $manager = $this->getManager();
-        /* @var $manager Manager */
-        
-        $config['id'] = $id;
-        $config['manager'] = $this->getManager();
-        $config['parent'] = $this;
-        
-        $text = new Text($config);
-        $manager->getActiveContainer()->components[] = $text;
-        
-        return $text;
+        return $this->field(Text::class, $id, $config);
     }
     
     /**
@@ -122,16 +135,7 @@ trait ContainerTrait
      */
     public function image($id, $config = [])
     {
-        $manager = $this->getManager();
-        /* @var $manager Manager */
-        
-        $config['id'] = $id;
-        $config['manager'] = $this->getManager();
-        $config['parent'] = $this;
-        
-        $text = new Image($config);
-        $manager->getActiveContainer()->components[] = $text;
-        return $text;
+        return $this->field(Image::class, $id, $config);
     }
     
     /**
@@ -142,17 +146,7 @@ trait ContainerTrait
      */
     public function link($id, $config = [])
     {
-        $manager = $this->getManager();
-        /* @var $manager Manager */
-        
-        $config['id'] = $id;
-        $config['manager'] = $this->getManager();
-        $config['parent'] = $this;
-        
-        $text = new Link($config);
-        $manager->getActiveContainer()->components[] = $text;
-        
-        return $text;
+        return $this->field(Link::class, $id, $config);
     }
     
     /**
