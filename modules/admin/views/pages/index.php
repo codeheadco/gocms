@@ -24,17 +24,32 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
             'id',
-            'filename',
-            'status',
-            'created_at',
+            [
+                'attribute' => 'status',
+                'filter' => yii\bootstrap\Html::activeDropDownList(
+                                $searchModel, 'status', 
+                                app\models\Page::getStatusLabels(),
+                                ['class' => 'form-control']
+                            ),
+            ],
+//            'created_at',
             //'created_by',
-
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{update}'
+                'template' => '{update} {delete}',
+                'buttons' => [
+                    'delete' => function ($url, $model, $index) {
+                        if ($model->view) {
+                            return;
+                        }
+                        
+                        return yii\bootstrap\Html::a(
+                                   yii\bootstrap\Html::tag('span', '', ['class' => 'glyphicon glyphicon-pencil']), 
+                                   $url
+                               );
+                    }
+                ],
             ],
         ],
     ]); ?>

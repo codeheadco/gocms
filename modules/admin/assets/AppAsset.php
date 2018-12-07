@@ -28,6 +28,7 @@ class AppAsset extends AssetBundle
         'jQuery-Tags-Input-master/dist/jquery.tagsinput.min.css',
 
     ];
+    public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
     public $js = [
         'js/adminlte/js/adminlte.min.js',
         'js/morris/morris.min.js',

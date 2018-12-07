@@ -24,15 +24,23 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
             'id',
-            'parent_id',
-            'route',
-
+            [
+                'label' => 'Cím',
+                'value' => function (codeheadco\gocms\models\MenuItem $model) {
+                    return $model->menuItemI18->title;
+                },
+            ],
+            [
+                'label' => 'Url',
+                'value' => function (codeheadco\gocms\models\MenuItem $model) {
+                    return $model->menuItemI18->url;
+                },
+            ],
+            'panel',
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{update} {delete}',
+                'template' => '{update}',
             ],
         ],
     ]); ?>
