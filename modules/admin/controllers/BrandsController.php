@@ -7,7 +7,6 @@ use app\models\Brand;
 use app\models\search\BrandSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * BrandsController implements the CRUD actions for Brand model.

@@ -7,7 +7,6 @@ use app\models\MenuItem;
 use app\models\search\MenuItemSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * MenuController implements the CRUD actions for MenuItem model.

@@ -9,7 +9,6 @@ use app\models\search\ProductsSearch;
 use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * ProductsController implements the CRUD actions for Product model.

@@ -25,6 +25,7 @@ trait ContainerTrait
      * @param type $fieldClass
      * @param type $id
      * @param type $config
+     * @return Field Description
      */
     public function field($fieldClass, $id, $config = [])
     {

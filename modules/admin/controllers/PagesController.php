@@ -7,28 +7,12 @@ use app\models\Page;
 use app\models\search\PageSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * PagesController implements the CRUD actions for Page model.
  */
 class PagesController extends \codeheadco\gocms\modules\admin\components\AdminBaseController
 {
-    
-    /** 
-     * {@inheritdoc} 
-     */ 
-    public function behaviors() 
-    { 
-        return [ 
-            'verbs' => [ 
-                'class' => VerbFilter::className(), 
-                'actions' => [ 
-                    'delete' => ['POST'], 
-                ], 
-            ], 
-        ]; 
-    } 
 
     /**
      * Lists all Page models.
@@ -57,14 +41,33 @@ class PagesController extends \codeheadco\gocms\modules\admin\components\AdminBa
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        /* @var $model Page */
+        
+        $postData = Yii::$app->request->post();
 
-        if ($model->load(Yii::$app->request->post())) {
-            $model->setArrayAttribute('data', $model->data);
-            
-            if ($model->save()) {
-                return $this->redirect(['update', 'id' => $model->id]);
+        if ($model->load($postData) && $model->save()) {
+            $modelI18sData = \yii\helpers\ArrayHelper::getValue($postData, 'PageI18');
+
+            foreach ($modelI18sData as $language => $pageI18Data) {
+                $pageI18 = $model->getI18Model($language);
+                /* @var $pageI18 \app\models\PageI18 */
+                $pageI18->page_id = $model->id;
+
+                $pageI18->name = $pageI18Data['name'];
+
+                if ($model->view) {
+                    $pageI18->setArrayAttribute('content', $pageI18Data['content']);
+                } else {
+                    $pageI18->content = $pageI18Data['content'];
+                }
+
+                $pageI18->save(false);
             }
+
+            return $this->redirect(['update', 'id' => $model->id]);
         }
+
+        Yii::$app->pagesManager->update();
 
         return $this->render('update', [
             'model' => $model,
