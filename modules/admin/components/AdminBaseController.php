@@ -55,7 +55,7 @@ class AdminBaseController extends Controller
         return $result;
     }
     
-    protected function save($model, $view, $fileFields = [])
+    protected function save($model, $view, $fileFields = [], $redirect = null)
     {
         $modelShortClass = \codeheadco\tools\Utils::classShortName($model);
         $modelI18ShortClass = "{$modelShortClass}I18";
@@ -87,7 +87,11 @@ class AdminBaseController extends Controller
                     }
                 }
                 
-                return $this->redirect(['update', 'id' => $model->id]);
+                if (is_array($redirect) && isset($redirect[0]) && false === $redirect[0]) {
+                    return $redirect[1];
+                }
+                
+                return $this->redirect((null === $redirect ? ['update', 'id' => $model->id] : $redirect));
             }
         }
 
