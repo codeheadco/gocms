@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use yii\helpers\ArrayHelper;
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\search\PageSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -18,19 +20,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
         'columns' => [
             'id',
             [
-                'attribute' => 'status',
-                'filter' => yii\bootstrap\Html::activeDropDownList(
-                                $searchModel, 'status', 
-                                app\models\Page::getStatusLabels(),
-                                ['class' => 'form-control']
-                            ),
+                'label' => 'Name',
+                'value' => function ($model) {
+                    return ArrayHelper::getValue($model->pageI18, 'name');
+                },
             ],
-//            'created_at',
-            //'created_by',
+            [
+                'attribute' => 'status',
+            ],
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{update} {delete}',
@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                         
                         return yii\bootstrap\Html::a(
-                                   yii\bootstrap\Html::tag('span', '', ['class' => 'glyphicon glyphicon-pencil']), 
+                                   yii\bootstrap\Html::tag('span', '', ['class' => 'glyphicon glyphicon-trash']), 
                                    $url
                                );
                     }
