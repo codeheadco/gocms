@@ -67,7 +67,9 @@ class PagesController extends \codeheadco\gocms\modules\admin\components\AdminBa
             return $this->redirect(['update', 'id' => $model->id]);
         }
 
-        Yii::$app->pagesManager->update();
+        $pagesManager = Yii::$app->pagesManager;
+        /* @var $pagesManager \codeheadco\gocms\editable\Manager */
+        $pagesManager->update();
 
         return $this->render('update', [
             'model' => $model,

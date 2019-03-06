@@ -9,7 +9,7 @@ use Yii;
  *
  * @author gabor
  */
-class Storage extends \yii\base\Component
+class Storage extends \yii\base\Component implements StorageInterface
 {
     
     /**
@@ -25,7 +25,6 @@ class Storage extends \yii\base\Component
      */
     protected function findModel($create)
     {
-        
         $page = \app\models\Page::find()->where([
             'view' => $this->manager->file
         ])->one();
@@ -65,7 +64,7 @@ class Storage extends \yii\base\Component
 //        $pageI18->save(false);
 //    }
     
-    public function get(Field $field)
+    public function getPageData(Field $field)
     {
         $page = $this->findModel(false);
         
@@ -75,10 +74,6 @@ class Storage extends \yii\base\Component
             /* @var $pageI18 \app\models\PageI18 */
             
             $content = $pageI18->getArrayAttribute('content');
-            
-            //var_dump($content);die;
-            
-            \yii\helpers\ArrayHelper::getValue($content, $field->id);
             
             return \yii\helpers\ArrayHelper::getValue($content, $field->id);
         }

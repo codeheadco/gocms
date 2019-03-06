@@ -84,7 +84,6 @@ class Manager extends \yii\base\Behavior implements ContainerInterface
     public function setLanguage($language)
     {
         $this->language = $language;
-        $this->setupView();
         return $this;
     }
     
@@ -101,28 +100,15 @@ class Manager extends \yii\base\Behavior implements ContainerInterface
      * 
      * @param \yii\web\View $view
      */
-    public function attachView(\yii\web\View $view)
+    public function attachView(\yii\web\View $view, StorageInterface $storage = null)
     {
         $this->view = $view;
+        $this->_storage = $storage;
         
         $viewFile = $this->view->getViewFile();
         $this->file = substr($viewFile, strlen(Yii::getAlias('@app')) + 1, strlen($viewFile));
         
         $view->attachBehavior('editable', $this);
-        
-        $this->setupView();
-    }
-    
-    /**
-     * 
-     */
-    public function setupView()
-    {
-        if ($this->view) {
-            $model = $this->storage()->getModel();
-            
-            $this->view->title = $model ? $model->name : '';
-        }
     }
     
     /**
@@ -141,7 +127,7 @@ class Manager extends \yii\base\Behavior implements ContainerInterface
     {
         return $this;
     }
-    
+
     /**
      *
      * @var type 
@@ -154,17 +140,25 @@ class Manager extends \yii\base\Behavior implements ContainerInterface
      */
     public function storage()
     {
-        return $this->_storage = new Storage(['manager' => $this]);
+        if ($this->_storage) {
+            return $this->_storage;
+        }
+        
+        return $this->_storage = new Storage([
+            'manager' => $this,
+        ]);
     }
     
     /**
      * 
      * @param type $file
      */
-    public function loadComponents($file)
+    public function loadComponents($file, $model = null)
     {
         $this->components = [];
-        Yii::$app->view->renderFile($file);
+        Yii::$app->view->renderFile($file, [
+            'model' => $model,
+        ]);
     }
     
     public function update()

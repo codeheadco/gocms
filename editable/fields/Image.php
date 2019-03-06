@@ -108,7 +108,12 @@ class Image extends BaseField
     {
         $this->loadFromStorage();
         
-        return Html::img($this->content, ArrayHelper::merge(
+        $img = $this->content;
+        $file = \codeheadco\tools\modules\files\models\File::getByUploadId($img);
+        
+        list($realPath, $publicPath) = \Yii::$app->assetManager->publish($file->getPath());
+        
+        return Html::img($publicPath, ArrayHelper::merge(
                 [
                     'title' => $this->title,
                     'alt' => $this->alt,

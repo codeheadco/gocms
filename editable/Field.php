@@ -71,7 +71,7 @@ abstract class Field extends \yii\base\Model
      */
     protected function loadFromStorage()
     {
-        $stored = $this->getStorage()->get($this);
+        $stored = $this->getStorage()->getPageData($this);
         
         if ($stored) {
             foreach ($stored as $propertyName => $value) {
@@ -132,8 +132,13 @@ abstract class Field extends \yii\base\Model
         $language = $this->manager->getLanguage();
         $saveModel = $this->manager->storage()->getModel();
         
+        if ($saveModel->hasAttribute('language')) {
+            return \codeheadco\tools\Utils::classShortName($saveModel)
+                    . "[{$language}][content][{$this->id}][{$property}]";
+        }
+        
         return \codeheadco\tools\Utils::classShortName($saveModel)
-                . "[{$language}][content][{$this->id}][{$property}]";
+                . "[content][{$this->id}][{$property}]";
     }
     
     /**
