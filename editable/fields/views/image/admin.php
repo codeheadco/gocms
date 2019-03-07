@@ -8,4 +8,7 @@
     'model' => $field,
     'attribute' => 'content',
     'name' => $field->getAdminInputName('content'),
+    'options' => [
+        'id' => \yii\helpers\Inflector::slug($field->getAdminInputName('content')),
+    ],
 ]) ?>
