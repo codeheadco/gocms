@@ -44,7 +44,7 @@ class PagesController extends \codeheadco\gocms\modules\admin\components\AdminBa
         /* @var $model Page */
         
         $postData = Yii::$app->request->post();
-
+        
         if ($model->load($postData) && $model->save()) {
             $modelI18sData = \yii\helpers\ArrayHelper::getValue($postData, 'PageI18');
 

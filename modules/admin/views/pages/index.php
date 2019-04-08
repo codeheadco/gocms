@@ -25,11 +25,15 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Name',
                 'value' => function ($model) {
-                    return ArrayHelper::getValue($model->pageI18, 'name');
+                    $name = ArrayHelper::getValue($model->pageI18, 'name');
+                    
+                    if (!$name) {
+                        $viewPI = pathinfo($model->view);
+                        $name = $viewPI['filename'];
+                    }
+                    
+                    return $name;
                 },
-            ],
-            [
-                'attribute' => 'status',
             ],
             [
                 'class' => 'yii\grid\ActionColumn',

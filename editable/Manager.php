@@ -99,18 +99,30 @@ class Manager extends \yii\base\Behavior implements ContainerInterface
     /**
      * 
      * @param \yii\web\View $view
+     * @param \codeheadco\gocms\editable\StorageInterface $storage
+     * @return $this
      */
     public function attachView(\yii\web\View $view, StorageInterface $storage = null)
     {
-        $this->view = $view;
-        $this->_storage = $storage;
+        if (empty($this->view)) {
+            $this->view = $view;
+            $this->_storage = $storage;
+
+            $viewFile = $this->view->getViewFile();
+            $this->file = substr($viewFile, strlen(Yii::getAlias('@app')) + 1, strlen($viewFile));
+
+            $view->attachBehavior('editable', $this);
+        }
         
-        $viewFile = $this->view->getViewFile();
-        $this->file = substr($viewFile, strlen(Yii::getAlias('@app')) + 1, strlen($viewFile));
-        
-        $view->attachBehavior('editable', $this);
+        return $this;
     }
     
+    public function detachView()
+    {
+        $this->view->attachBehavior('editable', $this);
+        $this->view = null;
+    }
+
     /**
      * 
      * @return $this
@@ -199,7 +211,7 @@ class Manager extends \yii\base\Behavior implements ContainerInterface
                 $model->setArrayAttribute('content', $componentsData);
                 $model->save(false);
                 
-                $view->detachBehavior('editable');
+                $this->detachView();
             }
         }
     }
