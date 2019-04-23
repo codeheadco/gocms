@@ -134,21 +134,34 @@ class Image extends BaseField
         return $this;
     }
     
+    protected $imageUrl;
+
+    public function getImageUrl()
+    {
+        if (!$this->imageUrl) {
+            if (empty($this->cropContent)) {
+                $this->loadFromStorage();
+
+                $imgFileId = $this->content;
+                $file = \codeheadco\tools\modules\files\models\File::getByUploadId($imgFileId);
+
+                list($realPath, $publicPath) = \Yii::$app->assetManager->publish($file->getPath());
+            } else {
+                list($realPath, $publicPath) = \Yii::$app->assetManager->publish($this->cropContent);
+            }
+            
+            $this->imageUrl = $publicPath;
+        }
+        
+        return $this->imageUrl;
+    }
+    
     /**
      * @inheritdoc
      */
     public function render()
     {
-        if (empty($this->cropContent)) {
-            $this->loadFromStorage();
-
-            $imgFileId = $this->content;
-            $file = \codeheadco\tools\modules\files\models\File::getByUploadId($imgFileId);
-
-            list($realPath, $publicPath) = \Yii::$app->assetManager->publish($file->getPath());
-        } else {
-            list($realPath, $publicPath) = \Yii::$app->assetManager->publish($this->cropContent);
-        }
+        $publicPath = $this->getImageUrl();
         
         return Html::img($publicPath, ArrayHelper::merge(
                 [
