@@ -4,8 +4,6 @@ namespace codeheadco\gocms\models;
 
 use Yii;
 use codeheadco\gocms\components\BaseActiveRecord;
-use codeheadco\tools\TranslateInterface;
-use codeheadco\tools\TranslateTrait;
 
 /**
  * This is the model class for table "menu_item".
@@ -22,11 +20,8 @@ use codeheadco\tools\TranslateTrait;
  * @property MenuItem[] $menuItems
  * @property MenuItemI18[] $menuItemI18
  */
-class MenuItem extends BaseActiveRecord 
-               implements TranslateInterface
+class MenuItem extends BaseActiveRecord
 {
-    
-    use TranslateTrait;
     
     /**
      * {@inheritdoc}
@@ -119,11 +114,6 @@ class MenuItem extends BaseActiveRecord
     public function getUploadDirName()
     {
         return "/menuitem/{$this->id}";
-    }
-    
-    public static function getTranslationCategory()
-    {
-        return 'menuitem';
     }
     
 }

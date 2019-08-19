@@ -7,10 +7,8 @@ namespace codeheadco\gocms\modules\admin\components;
  *
  * @author Varga Gábor <gabor87@outlook.com>
  */
-class AdminMenu implements \codeheadco\tools\TranslateInterface
+class AdminMenu
 {
-    
-    use \codeheadco\tools\TranslateTrait;
 
     protected $menu;
 
@@ -35,11 +33,6 @@ class AdminMenu implements \codeheadco\tools\TranslateInterface
     public function get()
     {
         return $this->menu;
-    }
-    
-    public static function getTranslationCategory()
-    {
-        return 'adminmenu';
     }
 
 }
